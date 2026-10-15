@@ -1,22 +1,134 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>عربية فول وطعمية البرنس</title>
-    <style>
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
-        body { background: #1a1a1a; color: #fff; display: flex; flex-direction: column; align-items: center; min-height: 100vh; padding: 10px; }
-        header { text-align: center; margin-bottom: 10px; }
-        h1 { color: #f1c40f; font-size: 1.5rem; text-shadow: 2px 2px #c0392b; }
-        .stats-bar { display: flex; gap: 15px; background: #2c3e50; padding: 8px 15px; border-radius: 20px; font-weight: bold; margin-bottom: 10px; font-size: 0.9rem; border: 2px solid #f1c40f; }
-        .game-container { width: 100%; max-width: 400px; background: #34495e; border-radius: 15px; padding: 10px; box-shadow: 0 8px 16px rgba(0,0,0,0.5); display: flex; flex-direction: column; gap: 10px; }
-        .customer-section { background: #2c3e50; padding: 10px; border-radius: 10px; text-align: center; border: 2px dashed #f39c12; }
-        .customer-avatar { font-size: 2.5rem; margin-bottom: 5px; }
-        .order-bubble { background: #fff; color: #333; padding: 5px; border-radius: 8px; font-size: 0.85rem; font-weight: bold; display: inline-block; margin-top: 5px; }
-        .cart-board { background: #d35400; border-radius: 10px; padding: 10px; display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; }
-        .station { background: #e67e22; border: 2px solid #d35400; border-radius: 8px; padding: 8px; text-align: center; cursor: pointer; transition: 0.2s; user-select: none; }
-        .station:active { transform: scale(0.95); background: #f39c12; }
-        .station h3 { font-size: 0.9rem; margin-bottom: 3px; color: #fff; text-shadow: 1px 1px #000; }
-        .station p { font-size: 0.75rem; color: #f
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>عربية فول وطعمية البرنس</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+    body { background-color: #1a1a1a; color: #fff; text-align: center; padding: 15px; }
+    header { margin-bottom: 15px; }
+    h1 { color: #f1c40f; font-size: 24px; margin-bottom: 5px; }
+    .stats-bar { display: flex; justify-content: space-around; background: #2c3e50; padding: 10px; border-radius: 8px; margin-bottom: 15px; font-weight: bold; }
+    .game-container { max-width: 500px; margin: 0 auto; background: #222; border: 2px solid #f1c40f; border-radius: 12px; padding: 15px; }
+    .customer-section { background: #333; border-radius: 8px; padding: 15px; margin-bottom: 15px; min-height: 120px; position: relative; }
+    .customer-avatar { font-size: 45px; margin-bottom: 5px; }
+    .order-bubble { background: #fff; color: #000; padding: 8px 12px; border-radius: 15px; display: inline-block; font-size: 14px; font-weight: bold; }
+    .cart-board { background: #e67e22; border-radius: 8px; padding: 15px; margin-bottom: 15px; }
+    .sandwich-preview { background: #d35400; border-radius: 6px; padding: 10px; min-height: 60px; margin-bottom: 10px; display: flex; align-items: center; justify-content: center; gap: 5px; flex-wrap: wrap; }
+    .ingredient-tag { background: #2c3e50; color: #fff; padding: 4px 8px; border-radius: 4px; font-size: 12px; }
+    .ingredients-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
+    button { background: #27ae60; color: white; border: none; padding: 10px; font-size: 14px; font-weight: bold; border-radius: 6px; cursor: pointer; transition: 0.2s; }
+    button:active { transform: scale(0.95); }
+    .btn-serve { background: #f39c12; width: 100%; margin-top: 10px; padding: 12px; font-size: 16px; }
+    .btn-clear { background: #c0392b; width: 100%; margin-top: 5px; padding: 8px; font-size: 13px; }
+    .message { font-size: 14px; margin-top: 10px; min-height: 20px; font-weight: bold; }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h1>🥪 عربية فول وطعمية البرنس 🥪</h1>
+    <p>خدم الزباين وجمع فلوس بسرعة!</p>
+  </header>
+
+  <div class="game-container">
+    <div class="stats-bar">
+      <div>💰 الفلوس: <span id="money">0</span> ج.م</div>
+      <div>😊 الرضا: <span id="reputation">100</span>%</div>
+    </div>
+
+    <div class="customer-section">
+      <div class="customer-avatar" id="avatar">🧔</div>
+      <div class="order-bubble" id="order-text">تحميل الطلب...</div>
+    </div>
+
+    <div class="cart-board">
+      <h3>إعداد الساندوتش</h3>
+      <div class="sandwich-preview" id="preview">عيش بلدي جاهز...</div>
       
+      <div class="ingredients-grid">
+        <button onclick="addIngredient('فول')">🟤 فول</button>
+        <button onclick="addIngredient('طعمية')">🟢 طعمية</button>
+        <button onclick="addIngredient('سلطة')">🥗 سلطة</button>
+        <button onclick="addIngredient('طحينة')">🥣 طحينة</button>
+      </div>
+
+      <button class="btn-serve" onclick="serveOrder()">تقديم الساندوتش 🚀</button>
+      <button class="btn-clear" onclick="clearSandwich()">مسح وإعادة الساندوتش 🗑️</button>
+    </div>
+
+    <div class="message" id="msg"></div>
+  </div>
+
+  <script>
+    const customers = ["🧔", "👨‍🦰", "👴", "👩", "👱‍♂️"];
+    const recipes = [
+      { name: "ساندوتش فول بالسطة والطحينة", items: ["فول", "سلطة", "طحينة"], price: 15 },
+      { name: "ساندوتش طعمية مشكل", items: ["طعمية", "سلطة", "طحينة"], price: 15 },
+      { name: "ساندوتش فول وطعمية (مكس)", items: ["فول", "طعمية", "طحينة"], price: 20 },
+      { name: "ساندوتش طعمية بس", items: ["طعمية"], price: 10 }
+    ];
+
+    let currentOrder = null;
+    let currentSandwich = [];
+    let money = 0;
+    let reputation = 100;
+
+    function nextCustomer() {
+      currentSandwich = [];
+      updatePreview();
+      const randomAvatar = customers[Math.floor(Math.random() * customers.length)];
+      currentOrder = recipes[Math.floor(Math.random() * recipes.length)];
+      
+      document.getElementById('avatar').innerText = randomAvatar;
+      document.getElementById('order-text').innerText = "عايز: " + currentOrder.name;
+      document.getElementById('msg').innerText = "";
+    }
+
+    function addIngredient(item) {
+      currentSandwich.push(item);
+      updatePreview();
+    }
+
+    function updatePreview() {
+      const preview = document.getElementById('preview');
+      if (currentSandwich.length === 0) {
+        preview.innerHTML = "عيش بلدي جاهز...";
+      } else {
+        preview.innerHTML = currentSandwich.map(i => `<span class="ingredient-tag">${i}</span>`).join('');
+      }
+    }
+
+    function clearSandwich() {
+      currentSandwich = [];
+      updatePreview();
+    }
+
+    function serveOrder() {
+      if (!currentOrder) return;
+
+      const isCorrect = currentOrder.items.length === currentSandwich.length &&
+                        currentOrder.items.every(val => currentSandwich.includes(val));
+
+      const msg = document.getElementById('msg');
+      if (isCorrect) {
+        money += currentOrder.price;
+        msg.style.color = "#2ecc71";
+        msg.innerText = "تسلم إيدك! الزبون مبسوط والدفع تم 👍";
+      } else {
+        reputation = Math.max(0, reputation - 10);
+        msg.style.color = "#e74c3c";
+        msg.innerText = "ايه ده! الساندوتش غلط والزبون زعل ❌";
+      }
+
+      document.getElementById('money').innerText = money;
+      document.getElementById('reputation').innerText = reputation;
+
+      setTimeout(nextCustomer, 1500);
+    }
+
+    nextCustomer();
+  </script>
+</body>
+</html>
