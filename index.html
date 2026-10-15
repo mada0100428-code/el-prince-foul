@@ -3,132 +3,37 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>عربية فول وطعمية البرنس</title>
+  <title>عربية فول وطعمية البرنس - النسخة المطورة</title>
   <style>
-    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
-    body { background-color: #1a1a1a; color: #fff; text-align: center; padding: 15px; }
-    header { margin-bottom: 15px; }
-    h1 { color: #f1c40f; font-size: 24px; margin-bottom: 5px; }
-    .stats-bar { display: flex; justify-content: space-around; background: #2c3e50; padding: 10px; border-radius: 8px; margin-bottom: 15px; font-weight: bold; }
-    .game-container { max-width: 500px; margin: 0 auto; background: #222; border: 2px solid #f1c40f; border-radius: 12px; padding: 15px; }
-    .customer-section { background: #333; border-radius: 8px; padding: 15px; margin-bottom: 15px; min-height: 120px; position: relative; }
-    .customer-avatar { font-size: 45px; margin-bottom: 5px; }
-    .order-bubble { background: #fff; color: #000; padding: 8px 12px; border-radius: 15px; display: inline-block; font-size: 14px; font-weight: bold; }
-    .cart-board { background: #e67e22; border-radius: 8px; padding: 15px; margin-bottom: 15px; }
-    .sandwich-preview { background: #d35400; border-radius: 6px; padding: 10px; min-height: 60px; margin-bottom: 10px; display: flex; align-items: center; justify-content: center; gap: 5px; flex-wrap: wrap; }
-    .ingredient-tag { background: #2c3e50; color: #fff; padding: 4px 8px; border-radius: 4px; font-size: 12px; }
-    .ingredients-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
-    button { background: #27ae60; color: white; border: none; padding: 10px; font-size: 14px; font-weight: bold; border-radius: 6px; cursor: pointer; transition: 0.2s; }
-    button:active { transform: scale(0.95); }
-    .btn-serve { background: #f39c12; width: 100%; margin-top: 10px; padding: 12px; font-size: 16px; }
-    .btn-clear { background: #c0392b; width: 100%; margin-top: 5px; padding: 8px; font-size: 13px; }
-    .message { font-size: 14px; margin-top: 10px; min-height: 20px; font-weight: bold; }
-  </style>
-</head>
-<body>
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Cairo', 'Segoe UI', Tahoma, sans-serif; }
+    body { background: linear-gradient(135deg, #0f2027, #203a43, #2c5364); color: #fff; min-height: 100vh; display: flex; flex-direction: column; align-items: center; padding: 15px; }
+    
+    header { text-align: center; margin-bottom: 15px; animation: fadeInDown 0.8s ease; }
+    h1 { color: #f1c40f; font-size: 26px; text-shadow: 2px 2px 4px rgba(0,0,0,0.5); margin-bottom: 5px; }
+    p { color: #bdc3c7; font-size: 14px; }
 
-  <header>
-    <h1>🥪 عربية فول وطعمية البرنس 🥪</h1>
-    <p>خدم الزباين وجمع فلوس بسرعة!</p>
-  </header>
+    .game-board { width: 100%; max-width: 480px; background: rgba(34, 34, 34, 0.95); border: 3px solid #f1c40f; border-radius: 16px; padding: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.7); animation: zoomIn 0.5s ease; }
 
-  <div class="game-container">
-    <div class="stats-bar">
-      <div>💰 الفلوس: <span id="money">0</span> ج.م</div>
-      <div>😊 الرضا: <span id="reputation">100</span>%</div>
-    </div>
+    .stats-bar { display: flex; justify-content: space-between; background: #111; padding: 10px 15px; border-radius: 10px; margin-bottom: 15px; border: 1px solid #444; font-weight: bold; font-size: 15px; }
+    .stat-money { color: #2ecc71; }
+    .stat-rep { color: #e74c3c; }
 
-    <div class="customer-section">
-      <div class="customer-avatar" id="avatar">🧔</div>
-      <div class="order-bubble" id="order-text">تحميل الطلب...</div>
-    </div>
+    /* منطقة الزبون المتحركة */
+    .street-scene { background: linear-gradient(to bottom, #2980b9, #2c3e50); border-radius: 12px; padding: 15px; margin-bottom: 15px; text-align: center; position: relative; overflow: hidden; min-height: 140px; display: flex; flex-direction: column; align-items: center; justify-content: center; border: 2px solid #34495e; }
+    
+    .customer-avatar { font-size: 55px; animation: bounceIn 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+    .order-bubble { background: #fff; color: #2c3e50; padding: 6px 14px; border-radius: 20px; font-size: 13px; font-weight: bold; margin-top: 5px; box-shadow: 0 4px 10px rgba(0,0,0,0.3); position: relative; }
+    .order-bubble::after { content: ''; position: absolute; top: -6px; left: 50%; transform: translateX(-50%); border-width: 0 6px 6px; border-style: solid; border-color: transparent transparent #fff; display: block; width: 0; }
 
-    <div class="cart-board">
-      <h3>إعداد الساندوتش</h3>
-      <div class="sandwich-preview" id="preview">عيش بلدي جاهز...</div>
-      
-      <div class="ingredients-grid">
-        <button onclick="addIngredient('فول')">🟤 فول</button>
-        <button onclick="addIngredient('طعمية')">🟢 طعمية</button>
-        <button onclick="addIngredient('سلطة')">🥗 سلطة</button>
-        <button onclick="addIngredient('طحينة')">🥣 طحينة</button>
-      </div>
+    /* عربية الفول وتجهيز الساندوتش */
+    .cart-board { background: #d35400; border-radius: 12px; padding: 12px; margin-bottom: 15px; box-shadow: inset 0 2px 5px rgba(0,0,0,0.3); }
+    .cart-title { font-size: 15px; color: #f1c40f; margin-bottom: 8px; font-weight: bold; text-align: center; }
+    
+    .sandwich-preview { background: #5d4037; border: 2px dashed #f1c40f; border-radius: 8px; padding: 10px; min-height: 55px; display: flex; align-items: center; justify-content: center; gap: 6px; flex-wrap: wrap; margin-bottom: 10px; }
+    .empty-cart-text { color: #d7ccc8; font-size: 13px; font-style: italic; }
+    
+    .ingredient-badge { background: #f1c40f; color: #000; padding: 4px 10px; border-radius: 6px; font-size: 12px; font-weight: bold; animation: popIn 0.3s ease; }
 
-      <button class="btn-serve" onclick="serveOrder()">تقديم الساندوتش 🚀</button>
-      <button class="btn-clear" onclick="clearSandwich()">مسح وإعادة الساندوتش 🗑️</button>
-    </div>
-
-    <div class="message" id="msg"></div>
-  </div>
-
-  <script>
-    const customers = ["🧔", "👨‍🦰", "👴", "👩", "👱‍♂️"];
-    const recipes = [
-      { name: "ساندوتش فول بالسطة والطحينة", items: ["فول", "سلطة", "طحينة"], price: 15 },
-      { name: "ساندوتش طعمية مشكل", items: ["طعمية", "سلطة", "طحينة"], price: 15 },
-      { name: "ساندوتش فول وطعمية (مكس)", items: ["فول", "طعمية", "طحينة"], price: 20 },
-      { name: "ساندوتش طعمية بس", items: ["طعمية"], price: 10 }
-    ];
-
-    let currentOrder = null;
-    let currentSandwich = [];
-    let money = 0;
-    let reputation = 100;
-
-    function nextCustomer() {
-      currentSandwich = [];
-      updatePreview();
-      const randomAvatar = customers[Math.floor(Math.random() * customers.length)];
-      currentOrder = recipes[Math.floor(Math.random() * recipes.length)];
-      
-      document.getElementById('avatar').innerText = randomAvatar;
-      document.getElementById('order-text').innerText = "عايز: " + currentOrder.name;
-      document.getElementById('msg').innerText = "";
-    }
-
-    function addIngredient(item) {
-      currentSandwich.push(item);
-      updatePreview();
-    }
-
-    function updatePreview() {
-      const preview = document.getElementById('preview');
-      if (currentSandwich.length === 0) {
-        preview.innerHTML = "عيش بلدي جاهز...";
-      } else {
-        preview.innerHTML = currentSandwich.map(i => `<span class="ingredient-tag">${i}</span>`).join('');
-      }
-    }
-
-    function clearSandwich() {
-      currentSandwich = [];
-      updatePreview();
-    }
-
-    function serveOrder() {
-      if (!currentOrder) return;
-
-      const isCorrect = currentOrder.items.length === currentSandwich.length &&
-                        currentOrder.items.every(val => currentSandwich.includes(val));
-
-      const msg = document.getElementById('msg');
-      if (isCorrect) {
-        money += currentOrder.price;
-        msg.style.color = "#2ecc71";
-        msg.innerText = "تسلم إيدك! الزبون مبسوط والدفع تم 👍";
-      } else {
-        reputation = Math.max(0, reputation - 10);
-        msg.style.color = "#e74c3c";
-        msg.innerText = "ايه ده! الساندوتش غلط والزبون زعل ❌";
-      }
-
-      document.getElementById('money').innerText = money;
-      document.getElementById('reputation').innerText = reputation;
-
-      setTimeout(nextCustomer, 1500);
-    }
-
-    nextCustomer();
-  </script>
-</body>
-</html>
+    /* أزرار المكونات */
+    .ingredients-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8
+    
