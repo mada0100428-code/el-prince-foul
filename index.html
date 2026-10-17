@@ -3,153 +3,20 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>ع الدائري - دليفري الموتوسيكل</title>
+  <title>ع الدائري - سباق السيارات</title>
   <style>
-    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Cairo', 'Segoe UI', Tahoma, sans-serif; }
-    body { background: #12141c; color: #fff; min-height: 100vh; display: flex; flex-direction: column; align-items: center; padding: 10px; }
-    
-    .app-container { width: 100%; max-width: 420px; background: #1a1d29; border: 2px solid #f1c40f; border-radius: 16px; padding: 15px; box-shadow: 0 10px 25px rgba(0,0,0,0.8); margin-top: 10px; }
-
-    /* الهيدر والفلوس */
-    .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; border-bottom: 2px solid #2a2e3d; padding-bottom: 10px; }
-    .game-title { font-size: 22px; font-weight: bold; color: #f1c40f; text-shadow: 0 2px 4px rgba(0,0,0,0.5); }
-    .money-badge { background: #222634; border: 1px solid #f1c40f; padding: 6px 12px; border-radius: 20px; font-weight: bold; color: #f1c40f; font-size: 14px; }
-
-    /* الشاشات */
-    .screen { display: none; }
-    .screen.active { display: block; }
-
-    /* الأزرار الرئيسية */
-    .btn-main { background: linear-gradient(135deg, #f1c40f, #d4ac0d); color: #12141c; border: none; width: 100%; padding: 14px; font-size: 16px; font-weight: bold; border-radius: 12px; cursor: pointer; margin-bottom: 10px; box-shadow: 0 4px 15px rgba(241,196,15,0.3); transition: 0.2s; }
-    .btn-secondary { background: #2a2e3d; color: #fff; border: 1px solid #444; width: 100%; padding: 12px; font-size: 14px; font-weight: bold; border-radius: 12px; cursor: pointer; margin-bottom: 10px; transition: 0.2s; }
-    .btn-main:active, .btn-secondary:active { transform: scale(0.97); }
-
-    /* شاشة الورشة */
-    .workshop-card { background: #222634; border: 1px solid #33384a; border-radius: 12px; padding: 12px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; }
-    .upgrade-info h4 { font-size: 15px; color: #f1c40f; margin-bottom: 3px; }
-    .upgrade-info p { font-size: 12px; color: #95a5a6; }
-    .btn-upgrade { background: #f1c40f; color: #000; border: none; padding: 8px 14px; font-weight: bold; border-radius: 8px; cursor: pointer; font-size: 13px; }
-
-    /* شاشة المشوار */
-    .road-scene { background: #2c3e50; border-radius: 12px; height: 180px; position: relative; overflow: hidden; display: flex; flex-direction: column; align-items: center; justify-content: center; margin-bottom: 15px; border: 2px solid #34495e; }
-    .speedometer { font-size: 28px; font-weight: bold; color: #f1c40f; text-shadow: 0 2px 4px rgba(0,0,0,0.6); }
-    .mission-box { background: rgba(0,0,0,0.6); padding: 8px 12px; border-radius: 8px; font-size: 13px; text-align: center; margin-top: 8px; border: 1px dashed #f1c40f; }
-
-    .msg { text-align: center; font-size: 13px; font-weight: bold; min-height: 22px; margin-top: 8px; }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Cairo', sans-serif; }
+    body { background: #12141c; color: #fff; display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 100vh; overflow: hidden; }
+    .game-container { width: 100%; max-width: 400px; text-align: center; background: #1a1d29; border: 2px solid #f1c40f; border-radius: 12px; padding: 10px; box-shadow: 0 10px 25px rgba(0,0,0,0.8); }
+    h1 { color: #f1c40f; font-size: 20px; margin-bottom: 5px; }
+    canvas { background: #333; display: block; margin: 0 auto; border-radius: 8px; border: 2px solid #555; width: 100%; max-width: 360px; height: 450px; }
+    .controls { display: flex; justify-content: space-between; margin-top: 10px; gap: 10px; }
+    .btn-ctrl { background: #f1c40f; color: #000; border: none; flex: 1; padding: 15px; font-size: 20px; font-weight: bold; border-radius: 8px; cursor: pointer; }
+    .btn-ctrl:active { background: #d4ac0d; }
+    .score-board { font-size: 16px; font-weight: bold; color: #2ecc71; margin-bottom: 5px; }
   </style>
 </head>
 <body>
 
-  <div class="app-container">
-    <div class="header">
-      <div class="game-title">ع الدائري 🛵</div>
-      <div class="money-badge">🪙 <span id="coins">150</span></div>
-    </div>
-
-    <!-- 1. الشاشة الرئيسية -->
-    <div id="homeScreen" class="screen active">
-      <div style="text-align: center; margin: 20px 0;">
-        <h3 style="color: #bdc3c7; font-size: 16px; margin-bottom: 5px;">جاهز لورديّة جديدة؟</h3>
-        <p style="font-size: 12px; color: #7f8c8d;">وصل الطلبات، جمع الفكّة، وطوّر مكنتك في الورشة!</p>
-      </div>
-
-      <button class="btn-main" onclick="startDelivery()">🟡 ابدأ مشوار جديد</button>
-      <button class="btn-secondary" onclick="openWorkshop()">🔧 الورشة والترقيات</button>
-    </div>
-
-    <!-- 2. شاشة المشوار والدليفري -->
-    <div id="deliveryScreen" class="screen">
-      <div class="road-scene">
-        <div style="font-size: 40px;">🏍️💨</div>
-        <div class="speedometer"><span id="speed">120</span> كم/س</div>
-        <div class="mission-box" id="missionText">الطلب: توصيل طلبية كشري (سرعة مطلوبة)</div>
-      </div>
-
-      <button class="btn-main" onclick="boostSpeed()">⚡ زود النيتروس!</button>
-      <button class="btn-secondary" onclick="finishDelivery()">✅ تسليم الطلب والقبض</button>
-      <div class="msg" id="deliveryMsg"></div>
-    </div>
-
-    <!-- 3. شاشة الورشة -->
-    <div id="workshopScreen" class="screen">
-      <h3 style="color: #f1c40f; margin-bottom: 12px; font-size: 16px;">ورشة الدليفرى 🛠️</h3>
-      
-      <div class="workshop-card">
-        <div class="upgrade-info">
-          <h4>موتور تيربو</h4>
-          <p>يزيد سرعة المكنة القصوى</p>
-        </div>
-        <button class="btn-upgrade" onclick="buyUpgrade(100, 'موتور')">100 🪙</button>
-      </div>
-
-      <div class="workshop-card">
-        <div class="upgrade-info">
-          <h4>نيتروس صاروخ</h4>
-          <p>تسريع حرق الإسفلت</p>
-        </div>
-        <button class="btn-upgrade" onclick="buyUpgrade(150, 'نيتروس')">150 🪙</button>
-      </div>
-
-      <button class="btn-secondary" onclick="goHome()" style="margin-top: 15px;">⬅️ العودة للرئيسية</button>
-    </div>
-
-  </div>
-
-  <script>
-    let coins = 150;
-    let currentSpeed = 120;
-
-    function updateCoins() {
-      document.getElementById('coins').innerText = coins;
-    }
-
-    function openWorkshop() {
-      document.getElementById('homeScreen').classList.remove('active');
-      document.getElementById('workshopScreen').classList.add('active');
-    }
-
-    function goHome() {
-      document.getElementById('workshopScreen').classList.remove('active');
-      document.getElementById('deliveryScreen').classList.remove('active');
-      document.getElementById('homeScreen').classList.add('active');
-    }
-
-    function startDelivery() {
-      document.getElementById('homeScreen').classList.remove('active');
-      document.getElementById('deliveryScreen').classList.add('active');
-      document.getElementById('deliveryMsg').innerText = "";
-      currentSpeed = 120;
-      document.getElementById('speed').innerText = currentSpeed;
-    }
-
-    function boostSpeed() {
-      currentSpeed += 35;
-      document.getElementById('speed').innerText = currentSpeed;
-      document.getElementById('deliveryMsg.style.color'] = "#2ecc71";
-      document.getElementById('deliveryMsg').innerText = "عاش! ولعت معاك وسرعة خطيرة 🔥";
-    }
-
-    function finishDelivery() {
-      let earned = Math.floor(Math.random() * 50) + 70;
-      coins += earned;
-      updateCoins();
-      document.getElementById('deliveryMsg').style.color = "#2ecc71";
-      document.getElementById('deliveryMsg').innerText = `تم التسليم بنجاح! كسبت +${earned} فكّة 🪙`;
-      
-      setTimeout(goHome, 2000);
-    }
-
-    function buyUpgrade(cost, name) {
-      if (coins >= cost) {
-        coins -= cost;
-        updateCoins();
-        alert(`تم شراء وترقية الـ ${name} بنجاح يا برنس! 🚀`);
-      } else {
-        alert("معاكش فلوس كفاية يا غالي! اخرج اقطع مشوار وجمع فكّة الأول.");
-      }
-    }
-
-    updateCoins();
-  </script>
-</body>
-</html>
+  <div class="game-container">
+    
