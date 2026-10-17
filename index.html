@@ -3,37 +3,153 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>عربية فول وطعمية البرنس - النسخة المطورة</title>
+  <title>ع الدائري - دليفري الموتوسيكل</title>
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Cairo', 'Segoe UI', Tahoma, sans-serif; }
-    body { background: linear-gradient(135deg, #0f2027, #203a43, #2c5364); color: #fff; min-height: 100vh; display: flex; flex-direction: column; align-items: center; padding: 15px; }
+    body { background: #12141c; color: #fff; min-height: 100vh; display: flex; flex-direction: column; align-items: center; padding: 10px; }
     
-    header { text-align: center; margin-bottom: 15px; animation: fadeInDown 0.8s ease; }
-    h1 { color: #f1c40f; font-size: 26px; text-shadow: 2px 2px 4px rgba(0,0,0,0.5); margin-bottom: 5px; }
-    p { color: #bdc3c7; font-size: 14px; }
+    .app-container { width: 100%; max-width: 420px; background: #1a1d29; border: 2px solid #f1c40f; border-radius: 16px; padding: 15px; box-shadow: 0 10px 25px rgba(0,0,0,0.8); margin-top: 10px; }
 
-    .game-board { width: 100%; max-width: 480px; background: rgba(34, 34, 34, 0.95); border: 3px solid #f1c40f; border-radius: 16px; padding: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.7); animation: zoomIn 0.5s ease; }
+    /* الهيدر والفلوس */
+    .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; border-bottom: 2px solid #2a2e3d; padding-bottom: 10px; }
+    .game-title { font-size: 22px; font-weight: bold; color: #f1c40f; text-shadow: 0 2px 4px rgba(0,0,0,0.5); }
+    .money-badge { background: #222634; border: 1px solid #f1c40f; padding: 6px 12px; border-radius: 20px; font-weight: bold; color: #f1c40f; font-size: 14px; }
 
-    .stats-bar { display: flex; justify-content: space-between; background: #111; padding: 10px 15px; border-radius: 10px; margin-bottom: 15px; border: 1px solid #444; font-weight: bold; font-size: 15px; }
-    .stat-money { color: #2ecc71; }
-    .stat-rep { color: #e74c3c; }
+    /* الشاشات */
+    .screen { display: none; }
+    .screen.active { display: block; }
 
-    /* منطقة الزبون المتحركة */
-    .street-scene { background: linear-gradient(to bottom, #2980b9, #2c3e50); border-radius: 12px; padding: 15px; margin-bottom: 15px; text-align: center; position: relative; overflow: hidden; min-height: 140px; display: flex; flex-direction: column; align-items: center; justify-content: center; border: 2px solid #34495e; }
-    
-    .customer-avatar { font-size: 55px; animation: bounceIn 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
-    .order-bubble { background: #fff; color: #2c3e50; padding: 6px 14px; border-radius: 20px; font-size: 13px; font-weight: bold; margin-top: 5px; box-shadow: 0 4px 10px rgba(0,0,0,0.3); position: relative; }
-    .order-bubble::after { content: ''; position: absolute; top: -6px; left: 50%; transform: translateX(-50%); border-width: 0 6px 6px; border-style: solid; border-color: transparent transparent #fff; display: block; width: 0; }
+    /* الأزرار الرئيسية */
+    .btn-main { background: linear-gradient(135deg, #f1c40f, #d4ac0d); color: #12141c; border: none; width: 100%; padding: 14px; font-size: 16px; font-weight: bold; border-radius: 12px; cursor: pointer; margin-bottom: 10px; box-shadow: 0 4px 15px rgba(241,196,15,0.3); transition: 0.2s; }
+    .btn-secondary { background: #2a2e3d; color: #fff; border: 1px solid #444; width: 100%; padding: 12px; font-size: 14px; font-weight: bold; border-radius: 12px; cursor: pointer; margin-bottom: 10px; transition: 0.2s; }
+    .btn-main:active, .btn-secondary:active { transform: scale(0.97); }
 
-    /* عربية الفول وتجهيز الساندوتش */
-    .cart-board { background: #d35400; border-radius: 12px; padding: 12px; margin-bottom: 15px; box-shadow: inset 0 2px 5px rgba(0,0,0,0.3); }
-    .cart-title { font-size: 15px; color: #f1c40f; margin-bottom: 8px; font-weight: bold; text-align: center; }
-    
-    .sandwich-preview { background: #5d4037; border: 2px dashed #f1c40f; border-radius: 8px; padding: 10px; min-height: 55px; display: flex; align-items: center; justify-content: center; gap: 6px; flex-wrap: wrap; margin-bottom: 10px; }
-    .empty-cart-text { color: #d7ccc8; font-size: 13px; font-style: italic; }
-    
-    .ingredient-badge { background: #f1c40f; color: #000; padding: 4px 10px; border-radius: 6px; font-size: 12px; font-weight: bold; animation: popIn 0.3s ease; }
+    /* شاشة الورشة */
+    .workshop-card { background: #222634; border: 1px solid #33384a; border-radius: 12px; padding: 12px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; }
+    .upgrade-info h4 { font-size: 15px; color: #f1c40f; margin-bottom: 3px; }
+    .upgrade-info p { font-size: 12px; color: #95a5a6; }
+    .btn-upgrade { background: #f1c40f; color: #000; border: none; padding: 8px 14px; font-weight: bold; border-radius: 8px; cursor: pointer; font-size: 13px; }
 
-    /* أزرار المكونات */
-    .ingredients-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8
-    
+    /* شاشة المشوار */
+    .road-scene { background: #2c3e50; border-radius: 12px; height: 180px; position: relative; overflow: hidden; display: flex; flex-direction: column; align-items: center; justify-content: center; margin-bottom: 15px; border: 2px solid #34495e; }
+    .speedometer { font-size: 28px; font-weight: bold; color: #f1c40f; text-shadow: 0 2px 4px rgba(0,0,0,0.6); }
+    .mission-box { background: rgba(0,0,0,0.6); padding: 8px 12px; border-radius: 8px; font-size: 13px; text-align: center; margin-top: 8px; border: 1px dashed #f1c40f; }
+
+    .msg { text-align: center; font-size: 13px; font-weight: bold; min-height: 22px; margin-top: 8px; }
+  </style>
+</head>
+<body>
+
+  <div class="app-container">
+    <div class="header">
+      <div class="game-title">ع الدائري 🛵</div>
+      <div class="money-badge">🪙 <span id="coins">150</span></div>
+    </div>
+
+    <!-- 1. الشاشة الرئيسية -->
+    <div id="homeScreen" class="screen active">
+      <div style="text-align: center; margin: 20px 0;">
+        <h3 style="color: #bdc3c7; font-size: 16px; margin-bottom: 5px;">جاهز لورديّة جديدة؟</h3>
+        <p style="font-size: 12px; color: #7f8c8d;">وصل الطلبات، جمع الفكّة، وطوّر مكنتك في الورشة!</p>
+      </div>
+
+      <button class="btn-main" onclick="startDelivery()">🟡 ابدأ مشوار جديد</button>
+      <button class="btn-secondary" onclick="openWorkshop()">🔧 الورشة والترقيات</button>
+    </div>
+
+    <!-- 2. شاشة المشوار والدليفري -->
+    <div id="deliveryScreen" class="screen">
+      <div class="road-scene">
+        <div style="font-size: 40px;">🏍️💨</div>
+        <div class="speedometer"><span id="speed">120</span> كم/س</div>
+        <div class="mission-box" id="missionText">الطلب: توصيل طلبية كشري (سرعة مطلوبة)</div>
+      </div>
+
+      <button class="btn-main" onclick="boostSpeed()">⚡ زود النيتروس!</button>
+      <button class="btn-secondary" onclick="finishDelivery()">✅ تسليم الطلب والقبض</button>
+      <div class="msg" id="deliveryMsg"></div>
+    </div>
+
+    <!-- 3. شاشة الورشة -->
+    <div id="workshopScreen" class="screen">
+      <h3 style="color: #f1c40f; margin-bottom: 12px; font-size: 16px;">ورشة الدليفرى 🛠️</h3>
+      
+      <div class="workshop-card">
+        <div class="upgrade-info">
+          <h4>موتور تيربو</h4>
+          <p>يزيد سرعة المكنة القصوى</p>
+        </div>
+        <button class="btn-upgrade" onclick="buyUpgrade(100, 'موتور')">100 🪙</button>
+      </div>
+
+      <div class="workshop-card">
+        <div class="upgrade-info">
+          <h4>نيتروس صاروخ</h4>
+          <p>تسريع حرق الإسفلت</p>
+        </div>
+        <button class="btn-upgrade" onclick="buyUpgrade(150, 'نيتروس')">150 🪙</button>
+      </div>
+
+      <button class="btn-secondary" onclick="goHome()" style="margin-top: 15px;">⬅️ العودة للرئيسية</button>
+    </div>
+
+  </div>
+
+  <script>
+    let coins = 150;
+    let currentSpeed = 120;
+
+    function updateCoins() {
+      document.getElementById('coins').innerText = coins;
+    }
+
+    function openWorkshop() {
+      document.getElementById('homeScreen').classList.remove('active');
+      document.getElementById('workshopScreen').classList.add('active');
+    }
+
+    function goHome() {
+      document.getElementById('workshopScreen').classList.remove('active');
+      document.getElementById('deliveryScreen').classList.remove('active');
+      document.getElementById('homeScreen').classList.add('active');
+    }
+
+    function startDelivery() {
+      document.getElementById('homeScreen').classList.remove('active');
+      document.getElementById('deliveryScreen').classList.add('active');
+      document.getElementById('deliveryMsg').innerText = "";
+      currentSpeed = 120;
+      document.getElementById('speed').innerText = currentSpeed;
+    }
+
+    function boostSpeed() {
+      currentSpeed += 35;
+      document.getElementById('speed').innerText = currentSpeed;
+      document.getElementById('deliveryMsg.style.color'] = "#2ecc71";
+      document.getElementById('deliveryMsg').innerText = "عاش! ولعت معاك وسرعة خطيرة 🔥";
+    }
+
+    function finishDelivery() {
+      let earned = Math.floor(Math.random() * 50) + 70;
+      coins += earned;
+      updateCoins();
+      document.getElementById('deliveryMsg').style.color = "#2ecc71";
+      document.getElementById('deliveryMsg').innerText = `تم التسليم بنجاح! كسبت +${earned} فكّة 🪙`;
+      
+      setTimeout(goHome, 2000);
+    }
+
+    function buyUpgrade(cost, name) {
+      if (coins >= cost) {
+        coins -= cost;
+        updateCoins();
+        alert(`تم شراء وترقية الـ ${name} بنجاح يا برنس! 🚀`);
+      } else {
+        alert("معاكش فلوس كفاية يا غالي! اخرج اقطع مشوار وجمع فكّة الأول.");
+      }
+    }
+
+    updateCoins();
+  </script>
+</body>
+</html>
